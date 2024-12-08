@@ -27,14 +27,39 @@
    <widget class="QPushButton" name="button">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>570</x>
       <y>400</y>
-      <width>181</width>
-      <height>51</height>
+      <width>201</width>
+      <height>71</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Freestyle Script</family>
+      <pointsize>14</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Обновить таблицу</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="new_rep">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>470</y>
+      <width>201</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Freestyle Script</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Добавить запись</string>
     </property>
    </widget>
   </widget>
