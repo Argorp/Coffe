@@ -1,7 +1,6 @@
 import sys
 import sqlite3
 from PyQt6.QtWidgets import QMainWindow, QTableWidgetItem, QApplication, QWidget
-from PyQt6 import uic
 from collections import defaultdict
 from main2 import Ui_MainWindow
 from addEditCoffeeForm import Ui_Form
@@ -10,17 +9,17 @@ from addEditCoffeeForm import Ui_Form
 class Main(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.upd_table = None
         self.con = None
         self.setupUi(self)
         self.roasting_translate = defaultdict(str)
         self.variation_translate = defaultdict(str)
-        self.setGeometry(0, 0, 800, 800)
-        # uic.loadUi("main2.ui", self)
+        self.setGeometry(0, 0, 800, 600)
+        self.con = sqlite3.connect("coffee")
         self.ui()
 
     def ui(self):
         self.button.clicked.connect(self.reset_table)
-        self.con = sqlite3.connect("coffee")
         roasting = self.con.execute("select * from Roasting").fetchall()
         view = self.con.execute("select * from View").fetchall()
         for i in roasting:
@@ -28,7 +27,9 @@ class Main(QMainWindow, Ui_MainWindow):
         for i in view:
             self.variation_translate[str(i[0])] = i[1]
         self.new_rep.clicked.connect(self.upd)
+        self.reset_table()
 
+    """Обновление таблицы"""
     def reset_table(self):
         header = ['Name', 'Degree of roasting', 'Variation', 'Description of taste',
                   'Cost', 'Size of package']
@@ -61,11 +62,23 @@ class Upd_Table(QWidget, Ui_Form):
 
     def ui(self):
         self.pushButton.clicked.connect(self.ins_rep)
+        for i in self.cur_main.roasting_translate.values():
+            self.Degreeofroast.addItem(i)
+        for i in self.cur_main.variation_translate.values():
+            self.Var.addItem(i)
+
 
     """Добавление записи в таблицу"""
     def ins_rep(self):
-        self.lineEdit.setText("Пока не работает :)")
-
+        if self.Name.text() == '' or self.Description.text() == '':
+            self.label_2.setText("Введите значения во все поля")
+        else:
+            try:
+                self.cur_main.con.execute("insert into Coffees (Name, Degree of roasting, Variation, Description of taste, Cost, Size of package) values (?, ?, ?, ?, ?, ?)",(self.Name.text(), self.Degreeofroast.currentText(), self.Var.currentText(), self.Description.text(), self.cost.text(), self.Size.text()))
+                self.cur_main.con.commit()
+                self.close()
+            except Exception as e:
+                print(e)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
